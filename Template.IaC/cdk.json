@@ -1,0 +1,11 @@
+{
+  "app": "dotnet run",
+  "context": {
+    "dev": {
+      "sampleTenants": [ "alpha", "beta" ]
+    },
+    "prod": {
+      "sampleTenants": []
+    }
+  }
+}
