@@ -6,6 +6,7 @@ namespace Template.Backend.Application;
 // The tenant comes from the Cognito group membership: users belong to exactly one group named
 // 'tenant-{id}', and the 'cognito:groups' claim is present in the access token (unlike custom
 // attributes, which only appear in the ID token).
+#pragma warning disable CA1724
 public static class Claims
 {
     private const string TenantGroupPrefix = "tenant-";
@@ -35,3 +36,4 @@ public static class Claims
         return (claims is not null) && claims.TryGetValue(name, out var value) ? value : string.Empty;
     }
 }
+#pragma warning restore CA1724

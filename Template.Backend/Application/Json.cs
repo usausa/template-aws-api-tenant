@@ -2,6 +2,7 @@ namespace Template.Backend.Application;
 
 // Builds the API Gateway responses. Kept in one place so every function returns the same shape
 // and headers.
+#pragma warning disable CA1724
 public static class Json
 {
     private static readonly JsonSerializerOptions SerializerOptions = new(JsonSerializerDefaults.Web);
@@ -56,3 +57,4 @@ public static class Json
             Body = body,
         };
 }
+#pragma warning restore CA1724
