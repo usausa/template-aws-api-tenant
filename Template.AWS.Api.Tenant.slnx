@@ -12,6 +12,6 @@
     <File Path="README.md" />
     <File Path="Template.AWS.Api.Tenant.sln.DotSettings" />
   </Folder>
-  <Project Path="Template.Backend/Template.Backend.csproj" DefaultStartup="true" />
-  <Project Path="Template.IaC/Template.IaC.csproj" />
+  <Project Path="src/Template.Backend/Template.Backend.csproj" DefaultStartup="true" />
+  <Project Path="src/Template.IaC/Template.IaC.csproj" />
 </Solution>
