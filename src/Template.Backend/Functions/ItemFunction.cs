@@ -2,11 +2,13 @@ namespace Template.Backend.Functions;
 
 using Amazon.Lambda.Annotations;
 
+using Smart.Mapper;
+
 using Template.Backend.Services;
 
 // Tenant scoped CRUD. Every handler resolves the tenant from the verified token first;
 // the data access layer never sees a tenant the caller does not belong to.
-public sealed class ItemFunction
+public sealed partial class ItemFunction
 {
     private readonly ItemService itemService;
 
@@ -14,6 +16,9 @@ public sealed class ItemFunction
     {
         this.itemService = itemService;
     }
+
+    [Mapper]
+    private static partial ItemResponse ToResponse(ItemEntity entity);
 
     [LambdaFunction]
     public async Task<APIGatewayHttpApiV2ProxyResponse> List(
@@ -27,7 +32,7 @@ public sealed class ItemFunction
 
         var list = await itemService.QueryListAsync(tenant);
 
-        return Json.Ok(new ItemListResponse(list.Count, list.Select(ItemMapper.ToResponse).ToList()));
+        return Json.Ok(new ItemListResponse(list.Count, list.Select(ToResponse).ToList()));
     }
 
     [LambdaFunction]
@@ -47,7 +52,7 @@ public sealed class ItemFunction
 
         var entity = await itemService.QueryAsync(tenant, id);
 
-        return entity is not null ? Json.Ok(entity.ToResponse()) : Json.NotFound();
+        return entity is not null ? Json.Ok(ToResponse(entity)) : Json.NotFound();
     }
 
     [LambdaFunction]
