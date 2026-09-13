@@ -27,7 +27,7 @@ public sealed class ItemFunction
 
         var list = await itemService.QueryListAsync(tenant);
 
-        return Json.Ok(new ItemListResponse(list.Count, list.Select(MapToResponse).ToList()));
+        return Json.Ok(new ItemListResponse(list.Count, list.Select(ItemMapper.ToResponse).ToList()));
     }
 
     [LambdaFunction]
@@ -47,7 +47,7 @@ public sealed class ItemFunction
 
         var entity = await itemService.QueryAsync(tenant, id);
 
-        return entity is not null ? Json.Ok(MapToResponse(entity)) : Json.NotFound();
+        return entity is not null ? Json.Ok(entity.ToResponse()) : Json.NotFound();
     }
 
     [LambdaFunction]
@@ -111,7 +111,4 @@ public sealed class ItemFunction
         id = string.Empty;
         return false;
     }
-
-    private static ItemResponse MapToResponse(ItemEntity entity) =>
-        new(entity.Id, entity.Name, entity.Value, entity.CreatedAt);
 }
