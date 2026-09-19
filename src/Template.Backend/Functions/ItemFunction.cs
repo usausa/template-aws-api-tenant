@@ -10,6 +10,10 @@ using Template.Backend.Services;
 // the data access layer never sees a tenant the caller does not belong to.
 public sealed partial class ItemFunction
 {
+    private const int DefaultLimit = 20;
+
+    private const int MaxLimit = 100;
+
     private readonly ItemService itemService;
 
     public ItemFunction(ItemService itemService)
@@ -30,9 +34,16 @@ public sealed partial class ItemFunction
             return Json.Forbidden("The user does not belong to any tenant group.");
         }
 
-        var list = await itemService.QueryListAsync(tenant);
+        // Paged with ?limit= and ?token= (the token of the previous page). One page per call.
+        if (!TryGetLimit(request, out var limit))
+        {
+            return Json.BadRequest("The limit query parameter is invalid.");
+        }
 
-        return Json.Ok(new ItemListResponse(list.Count, list.Select(ToResponse).ToList()));
+        var token = GetQuery(request, "token");
+        var (list, nextToken) = await itemService.QueryListAsync(tenant, String.IsNullOrEmpty(token) ? null : token, limit);
+
+        return Json.Ok(new ItemListResponse(list.Select(ToResponse).ToList(), nextToken));
     }
 
     [LambdaFunction]
@@ -102,6 +113,21 @@ public sealed partial class ItemFunction
 
         return deleted ? Json.NoContent() : Json.NotFound();
     }
+
+    private static bool TryGetLimit(APIGatewayHttpApiV2ProxyRequest request, out int limit)
+    {
+        var value = GetQuery(request, "limit");
+        if (String.IsNullOrEmpty(value))
+        {
+            limit = DefaultLimit;
+            return true;
+        }
+
+        return Int32.TryParse(value, NumberStyles.None, CultureInfo.InvariantCulture, out limit) && limit is >= 1 and <= MaxLimit;
+    }
+
+    private static string? GetQuery(APIGatewayHttpApiV2ProxyRequest request, string name) =>
+        (request.QueryStringParameters is not null) && request.QueryStringParameters.TryGetValue(name, out var value) ? value : null;
 
     private static bool TryGetId(APIGatewayHttpApiV2ProxyRequest request, out string id)
     {

@@ -21,10 +21,21 @@ public sealed class ItemService
         this.tableName = tableName;
     }
 
-    public async Task<List<ItemEntity>> QueryListAsync(string tenant)
+    // One page of the tenant's items. The token comes from the previous page (null for the first);
+    // the returned token is null on the last page.
+    public async Task<(List<ItemEntity> List, string? Token)> QueryListAsync(string tenant, string? paginationToken, int limit)
     {
-        var search = context.QueryAsync<ItemEntity>(tenant, new QueryConfig { OverrideTableName = tableName });
-        return await search.GetRemainingAsync();
+        var table = context.GetTargetTable<ItemEntity>(new GetTargetTableConfig { OverrideTableName = tableName });
+        var search = table.Query(new QueryOperationConfig
+        {
+            Filter = new QueryFilter(nameof(ItemEntity.TenantId), QueryOperator.Equal, tenant),
+            Limit = limit,
+            PaginationToken = paginationToken,
+        });
+
+        var documents = await search.GetNextSetAsync();
+        var list = context.FromDocuments<ItemEntity>(documents).ToList();
+        return (list, search.IsDone ? null : search.PaginationToken);
     }
 
     public Task<ItemEntity?> QueryAsync(string tenant, string id) =>
