@@ -14,9 +14,9 @@ public static class Program
             Env = new Amazon.CDK.Environment
             {
                 Account = System.Environment.GetEnvironmentVariable("CDK_DEFAULT_ACCOUNT"),
-                Region = EnvironmentConfig.Region,
+                Region = EnvironmentConfig.Region
             },
-            Description = "Multi tenant API template (HTTP API + Cognito JWT authorizer + tenant scoped DynamoDB)",
+            Description = "Multi tenant API template (HTTP API + Cognito JWT authorizer + tenant scoped DynamoDB)"
         });
 
         app.Synth();

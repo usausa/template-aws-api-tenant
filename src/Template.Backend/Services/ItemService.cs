@@ -30,7 +30,7 @@ public sealed class ItemService
         {
             Filter = new QueryFilter(nameof(ItemEntity.TenantId), QueryOperator.Equal, tenant),
             Limit = limit,
-            PaginationToken = paginationToken,
+            PaginationToken = paginationToken
         });
 
         var documents = await search.GetNextSetAsync();
@@ -49,7 +49,7 @@ public sealed class ItemService
             Id = Guid.NewGuid().ToString("N"),
             Name = name,
             Value = value,
-            CreatedAt = timeProvider.GetUtcNow().UtcDateTime,
+            CreatedAt = timeProvider.GetUtcNow().UtcDateTime
         };
 
         await context.SaveAsync(entity, new SaveConfig { OverrideTableName = tableName });

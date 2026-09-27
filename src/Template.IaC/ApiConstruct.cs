@@ -25,7 +25,7 @@ public sealed class ApiConstruct : Construct
     // Published output of the Template.Backend project, produced by scripts/deploy-api.ps1. Every
     // function shares this one artifact and differs only by handler.
     private static readonly string Artifact =
-        System.IO.Path.Combine(System.IO.Directory.GetCurrentDirectory(), "..", "publish-api");
+        Path.Combine(Directory.GetCurrentDirectory(), "..", "publish-api");
 
     private readonly EnvironmentConfig config;
 
@@ -41,7 +41,7 @@ public sealed class ApiConstruct : Construct
 
         Api = new HttpApi(this, "Api", new HttpApiProps
         {
-            Description = $"Multi tenant API ({config.EnvName})",
+            Description = $"Multi tenant API ({config.EnvName})"
         });
 
         authorizer = new HttpUserPoolAuthorizer("Authorizer", userPool, new HttpUserPoolAuthorizerProps
@@ -49,7 +49,7 @@ public sealed class ApiConstruct : Construct
             UserPoolClients = [userPoolClient],
 
             // The API is called with an access token, which carries the 'cognito:groups' claim.
-            IdentitySource = ["$request.header.Authorization"],
+            IdentitySource = ["$request.header.Authorization"]
         });
 
         AddRoute("Tenant", HttpMethod.GET, "/tenant", "TenantFunction", "Handle");
@@ -72,14 +72,14 @@ public sealed class ApiConstruct : Construct
             Timeout = Duration.Seconds(10),
             Environment = new Dictionary<string, string>
             {
-                ["TABLE_NAME"] = table.TableName,
+                ["TABLE_NAME"] = table.TableName
             },
             LogGroup = new LogGroup(this, $"{name}Logs", new LogGroupProps
             {
                 Retention = config.Ephemeral ? RetentionDays.ONE_WEEK : RetentionDays.ONE_MONTH,
-                RemovalPolicy = config.Ephemeral ? RemovalPolicy.DESTROY : RemovalPolicy.RETAIN,
+                RemovalPolicy = config.Ephemeral ? RemovalPolicy.DESTROY : RemovalPolicy.RETAIN
             }),
-            Description = $"{name} API ({config.EnvName})",
+            Description = $"{name} API ({config.EnvName})"
         });
 
         table.GrantReadWriteData(function);
@@ -89,7 +89,7 @@ public sealed class ApiConstruct : Construct
             Path = path,
             Methods = [method],
             Authorizer = authorizer,
-            Integration = new HttpLambdaIntegration($"{name}Integration", function),
+            Integration = new HttpLambdaIntegration($"{name}Integration", function)
         });
     }
 }

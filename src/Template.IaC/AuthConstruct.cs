@@ -25,12 +25,12 @@ public sealed class AuthConstruct : Construct
             SignInAliases = new SignInAliases { Email = true },
             StandardAttributes = new StandardAttributes
             {
-                Email = new StandardAttribute { Required = true, Mutable = true },
+                Email = new StandardAttribute { Required = true, Mutable = true }
             },
             AccountRecovery = AccountRecovery.EMAIL_ONLY,
             FeaturePlan = FeaturePlan.ESSENTIALS,
             RemovalPolicy = config.Ephemeral ? RemovalPolicy.DESTROY : RemovalPolicy.RETAIN,
-            DeletionProtection = !config.Ephemeral,
+            DeletionProtection = !config.Ephemeral
         });
 
         // API-only client: no hosted UI. Tokens are obtained with USER_PASSWORD_AUTH
@@ -42,7 +42,7 @@ public sealed class AuthConstruct : Construct
             PreventUserExistenceErrors = true,
             AccessTokenValidity = Duration.Minutes(60),
             IdTokenValidity = Duration.Minutes(60),
-            RefreshTokenValidity = Duration.Days(30),
+            RefreshTokenValidity = Duration.Days(30)
         });
 
         //--------------------------------------------------------------------------------
@@ -55,7 +55,7 @@ public sealed class AuthConstruct : Construct
             {
                 UserPoolId = UserPool.UserPoolId,
                 GroupName = $"tenant-{tenant}",
-                Description = $"Members of tenant '{tenant}'",
+                Description = $"Members of tenant '{tenant}'"
             });
         }
     }

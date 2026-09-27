@@ -16,7 +16,7 @@ public sealed class DataConstruct : Construct
             PartitionKey = new Attribute { Name = "TenantId", Type = AttributeType.STRING },
             SortKey = new Attribute { Name = "Id", Type = AttributeType.STRING },
             BillingMode = BillingMode.PAY_PER_REQUEST,
-            RemovalPolicy = config.Ephemeral ? RemovalPolicy.DESTROY : RemovalPolicy.RETAIN,
+            RemovalPolicy = config.Ephemeral ? RemovalPolicy.DESTROY : RemovalPolicy.RETAIN
         });
     }
 
