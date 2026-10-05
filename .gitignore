@@ -427,7 +427,7 @@ FodyWeavers.xsd
 *.msix
 *.msm
 *.msp
-Template.Backend/serverless.template
+src/Template.Backend/serverless.template
 publish-api/
 cdk-outputs.*.json
 cdk.out/
