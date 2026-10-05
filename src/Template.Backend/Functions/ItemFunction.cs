@@ -22,7 +22,10 @@ public sealed partial class ItemFunction
     }
 
     [Mapper]
-    private static partial ItemResponse ToResponse(ItemEntity entity);
+    private static partial ItemListEntry ToListEntry(ItemEntity entity);
+
+    [Mapper]
+    private static partial ItemGetResponse ToGetResponse(ItemEntity entity);
 
     [LambdaFunction]
     public async Task<APIGatewayHttpApiV2ProxyResponse> List(
@@ -43,7 +46,7 @@ public sealed partial class ItemFunction
         var token = GetQuery(request, "token");
         var (list, nextToken) = await itemService.QueryListAsync(tenant, String.IsNullOrEmpty(token) ? null : token, limit);
 
-        return Json.Ok(new ItemListResponse(list.Select(ToResponse).ToList(), nextToken));
+        return Json.Ok(new ItemListResponse(list.Select(ToListEntry).ToList(), nextToken));
     }
 
     [LambdaFunction]
@@ -63,7 +66,7 @@ public sealed partial class ItemFunction
 
         var entity = await itemService.QueryAsync(tenant, id);
 
-        return entity is not null ? Json.Ok(ToResponse(entity)) : Json.NotFound();
+        return entity is not null ? Json.Ok(ToGetResponse(entity)) : Json.NotFound();
     }
 
     [LambdaFunction]
