@@ -1,6 +1,6 @@
 # Template project for AWS multi-tenant API
 
-Multi-tenant serverless API template on AWS (.NET 10).
+[Template](https://usausa.github.io/template/) project for AWS multi-tenant API.
 
 # ✅ Implement
 
